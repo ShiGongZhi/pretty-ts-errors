@@ -132,3 +132,7 @@ export const zh_cn_ts2345Error = d`
 export const zh_cn_ts2339Error_cornerQuotes = d`
 类型「User」上不存在属性「age」。
 `
+
+export const zh_cn_ts2741Error = d`
+类型 "{ name: string; age: number; }" 中缺少属性 "email"，但类型 "User" 中需要该属性。
+`

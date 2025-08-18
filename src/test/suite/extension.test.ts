@@ -17,7 +17,8 @@ import {
   zh_cn_ts2304Error,
   zh_cn_ts2339Error,
   zh_cn_ts2345Error,
-  zh_cn_ts2339Error_cornerQuotes
+  zh_cn_ts2339Error_cornerQuotes,
+  zh_cn_ts2741Error
 } from './errorMessageMocks'
 
 suite('Extension Test Suite', () => {
@@ -106,5 +107,13 @@ suite('Extension Test Suite', () => {
     )
     assert.match(out, /User/)
     assert.match(out, /age/)
+  })
+
+  test('Chinese: TS2741 missing property message should highlight quoted segments', () => {
+    const out = formatDiagnosticMessage(zh_cn_ts2741Error, prettify)
+    // Should include object type, property name, and target type
+    assert.match(out, /\{\s*name:\s*string;?\s*age:\s*number;?\s*\}/)
+    assert.match(out, /email/)
+    assert.match(out, /User/)
   })
 })

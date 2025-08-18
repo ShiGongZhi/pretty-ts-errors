@@ -7,6 +7,25 @@ const formatTypeScriptBlock = (_: string, code: string) =>
 const formatSimpleTypeBlock = (_: string, code: string) =>
   inlineCodeBlock(code, 'type')
 
+// Replace only in text segments (outside HTML tags/attributes)
+type StringReplacer = (substring: string, ...args: string[]) => string
+const replaceTextOnly = (
+  html: string,
+  pattern: RegExp,
+  replacer: StringReplacer
+) =>
+  html
+    .split(/(<[^>]+>)/g)
+    .map((seg) =>
+      seg.startsWith('<')
+        ? seg
+        : seg.replace(pattern, (...args: unknown[]) => {
+            const [substring, ...rest] = args as [string, ...string[]]
+            return replacer(substring, ...rest)
+          })
+    )
+    .join('')
+
 export const formatDiagnosticMessage = (
   message: string,
   format: (type: string) => string
@@ -17,29 +36,41 @@ export const formatDiagnosticMessage = (
   const hasCJK = /[\u3400-\u9FFF\uF900-\uFAFF]/.test(message)
 
   if (hasCJK) {
-    return (
-      message
-        // Highlight content within Chinese/Asian full-width quotes first
-        // e.g., 找不到模块“axios” 或 不能将类型“X”分配给类型“Y”
-        .replaceAll(/“([^”]+)”/g, (_: string, p1: string) =>
+    // Apply replacements only on text nodes to avoid corrupting HTML markup
+    return [
+      // 1) ASCII double quotes — 类型 "..."
+      (msg: string) =>
+        replaceTextOnly(msg, /"([^"\n]+)"/g, (_: string, p1: string) =>
           formatTypeBlock('', p1, format)
-        )
-        // Support Japanese/Traditional style corner quotes too: 「…」/『…』
-        .replaceAll(/[「『]([^」』]+)[」』]/g, (_: string, p1: string) =>
+        ),
+      // 2) Chinese full-width quotes — 类型 “...”，模块 “...”，属性 “...”
+      (msg: string) =>
+        replaceTextOnly(msg, /“([^”]+)”/g, (_: string, p1: string) =>
           formatTypeBlock('', p1, format)
-        )
-        // Keep TypeScript keywords formatting inside any quotes (works for localized sentences)
-        .replaceAll(
+        ),
+      // 3) Corner quotes 「…」/『…』
+      (msg: string) =>
+        replaceTextOnly(
+          msg,
+          /[「『]([^」』]+)[」』]/g,
+          (_: string, p1: string) => formatTypeBlock('', p1, format)
+        ),
+      // 4) TS keywords
+      (msg: string) =>
+        replaceTextOnly(
+          msg,
           /['“](import|export|require|in|continue|break|let|false|true|const|new|throw|await|for await|[0-9]+)( ?.*?)['”]/g,
           (_: string, p1: string, p2: string) =>
             formatTypeScriptBlock(_, `${p1}${p2}`)
-        )
-        // Fallback: simple single-quoted code spans
-        .replaceAll(
+        ),
+      // 5) Fallback single quotes
+      (msg: string) =>
+        replaceTextOnly(
+          msg,
           /'([^']+)'/g,
           (_: string, p1: string) => ` ${unStyledCodeBlock(p1)} `
         )
-    )
+    ].reduce((acc, fn) => fn(acc), message)
   }
 
   return (
