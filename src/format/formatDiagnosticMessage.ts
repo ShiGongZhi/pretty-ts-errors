@@ -55,7 +55,19 @@ export const formatDiagnosticMessage = (
           /[「『]([^」』]+)[」』]/g,
           (_: string, p1: string) => formatTypeBlock('', p1, format)
         ),
-      // 4) TS keywords
+      // 4) Chinese missing properties list: “以下属性: age, email” => <ul><li>age</li><li>email</li></ul>
+      (msg: string) =>
+        replaceTextOnly(
+          msg,
+          /(以下属性)\s*[:：]\s*([#\w]+(?:\s*[,，、]\s*[#\w]+)*)/g,
+          (_: string, p1: string, p2: string) =>
+            `${p1}： <ul>${p2
+              .split(/[,，、]\s*/)
+              .filter(Boolean)
+              .map((prop: string) => `<li>${prop}</li>`)
+              .join('')}</ul>`
+        ),
+      // 5) TS keywords
       (msg: string) =>
         replaceTextOnly(
           msg,
@@ -63,7 +75,7 @@ export const formatDiagnosticMessage = (
           (_: string, p1: string, p2: string) =>
             formatTypeScriptBlock(_, `${p1}${p2}`)
         ),
-      // 5) Fallback single quotes
+      // 6) Fallback single quotes
       (msg: string) =>
         replaceTextOnly(
           msg,
