@@ -13,7 +13,11 @@ import {
   errorWithDashInObjectKeys,
   errorWithSpecialCharsInObjectKeys,
   zh_cn_ts2307Error,
-  zh_cn_ts2322Error
+  zh_cn_ts2322Error,
+  zh_cn_ts2304Error,
+  zh_cn_ts2339Error,
+  zh_cn_ts2345Error,
+  zh_cn_ts2339Error_cornerQuotes
 } from './errorMessageMocks'
 
 suite('Extension Test Suite', () => {
@@ -76,5 +80,31 @@ suite('Extension Test Suite', () => {
     // Both "string" and "number" should appear, formatted as code
     assert.match(out, /string/)
     assert.match(out, /number/)
+  })
+
+  test('Chinese: cannot find name should highlight symbol', () => {
+    const out = formatDiagnosticMessage(zh_cn_ts2304Error, prettify)
+    assert.match(out, /varname/)
+  })
+
+  test('Chinese: property does not exist on type should highlight type and property', () => {
+    const out = formatDiagnosticMessage(zh_cn_ts2339Error, prettify)
+    assert.match(out, /User/)
+    assert.match(out, /age/)
+  })
+
+  test('Chinese: argument of type X is not assignable to parameter of type Y', () => {
+    const out = formatDiagnosticMessage(zh_cn_ts2345Error, prettify)
+    assert.match(out, /string/)
+    assert.match(out, /number/)
+  })
+
+  test('Chinese: corner quotes should be recognized', () => {
+    const out = formatDiagnosticMessage(
+      zh_cn_ts2339Error_cornerQuotes,
+      prettify
+    )
+    assert.match(out, /User/)
+    assert.match(out, /age/)
   })
 })

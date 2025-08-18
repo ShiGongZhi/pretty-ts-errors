@@ -116,3 +116,19 @@ export const zh_cn_ts2307Error = d`
 export const zh_cn_ts2322Error = d`
 无法将类型“string”分配给类型“number”。
 `
+
+export const zh_cn_ts2304Error = d`
+找不到名称“varname”。
+`
+
+export const zh_cn_ts2339Error = d`
+类型“User”上不存在属性“age”。
+`
+
+export const zh_cn_ts2345Error = d`
+类型为“string”的参数不能赋给类型为“number”的参数。
+`
+
+export const zh_cn_ts2339Error_cornerQuotes = d`
+类型「User」上不存在属性「age」。
+`
