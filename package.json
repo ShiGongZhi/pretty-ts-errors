@@ -1,18 +1,15 @@
 {
-  "name": "pretty-ts-errors",
-  "displayName": "Pretty TypeScript Errors",
-  "publisher": "YoavBls",
-  "description": "Make TypeScript errors prettier and more human-readable in VSCode",
-  "version": "0.6.1",
+  "name": "pretty-ts-errors-chinese",
+  "displayName": "Pretty TypeScript Errors (Chinese)",
+  "publisher": "SoulFriends",
+  "description": "在中文环境下更好地显示 TypeScript 错误。",
+  "version": "0.1.1",
   "icon": "assets/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yoavbls/pretty-ts-errors"
+    "url": "https://github.com/ShiGongZhi/pretty-ts-errors"
   },
-  "homepage": "https://github.com/yoavbls/pretty-ts-errors",
-  "sponsor": {
-    "url": "https://github.com/sponsors/yoavbls"
-  },
+  "homepage": "https://github.com/ShiGongZhi/pretty-ts-errors",
   "engines": {
     "vscode": "^1.77.0",
     "node": "20.18.x"
