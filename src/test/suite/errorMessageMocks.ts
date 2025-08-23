@@ -136,3 +136,8 @@ export const zh_cn_ts2339Error_cornerQuotes = d`
 export const zh_cn_ts2741Error = d`
 类型 "{ name: string; age: number; }" 中缺少属性 "email"，但类型 "User" 中需要该属性。
 `
+
+// Case: generic type with angle brackets should not be mis-parsed as HTML
+export const zh_cn_ts2345_setStateAction = d`
+类型为“unknown”的参数不能赋给类型为“SetStateAction<{}>”的参数。
+`

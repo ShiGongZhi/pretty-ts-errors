@@ -15,7 +15,9 @@ const replaceTextOnly = (
   replacer: StringReplacer
 ) =>
   html
-    .split(/(<[^>]+>)/g)
+    // Split by real HTML tags only (e.g. <span>, </div>, <a ...>)
+    // so that TS generics like `<T>` or `<{}>` are treated as plain text
+    .split(/(<\/?[a-zA-Z][^>]*>)/g)
     .map((seg) =>
       seg.startsWith('<')
         ? seg

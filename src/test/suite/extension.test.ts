@@ -18,7 +18,8 @@ import {
   zh_cn_ts2339Error,
   zh_cn_ts2345Error,
   zh_cn_ts2339Error_cornerQuotes,
-  zh_cn_ts2741Error
+  zh_cn_ts2741Error,
+  zh_cn_ts2345_setStateAction
 } from './errorMessageMocks'
 
 suite('Extension Test Suite', () => {
@@ -115,5 +116,11 @@ suite('Extension Test Suite', () => {
     assert.match(out, /\{\s*name:\s*string;?\s*age:\s*number;?\s*\}/)
     assert.match(out, /email/)
     assert.match(out, /User/)
+  })
+
+  test('Chinese: SetStateAction<{}> should be preserved and highlighted', () => {
+    const out = formatDiagnosticMessage(zh_cn_ts2345_setStateAction, prettify)
+    // We only assert the string exists; the hover output includes HTML wrappers
+    assert.match(out, /SetStateAction<\{\}>/)
   })
 })
