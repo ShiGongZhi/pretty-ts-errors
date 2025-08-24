@@ -123,4 +123,12 @@ suite('Extension Test Suite', () => {
     // We only assert the string exists; the hover output includes HTML wrappers
     assert.match(out, /SetStateAction<\{\}>/)
   })
+
+  test('Chinese: strip outer Chinese quotes around ASCII quoted text (“"..."”)', () => {
+    const out = formatDiagnosticMessage('“"./config.tsx"”', prettify)
+    // No Chinese quotes should remain around the formatted content
+    assert.ok(!/“|”/.test(out))
+    // The inner content should still be present/formatted
+    assert.match(out, /config\.tsx/)
+  })
 })

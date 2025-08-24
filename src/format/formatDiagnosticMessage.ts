@@ -32,14 +32,24 @@ export const formatDiagnosticMessage = (
   message: string,
   format: (type: string) => string
 ) => {
+  // Normalize: strip outer Chinese quotes when they wrap an ASCII-quoted fragment, e.g. “"..."” or “'...'”
+  const normalized = message.replace(/“\s*("[^"]+"|'[^']+')\s*”/g, '$1')
   // If the message contains CJK characters, prefer a locale-agnostic, safe formatting path
   // that focuses on highlighting quoted code fragments without relying on English words.
   // This prevents incorrect replacements on Chinese-localized diagnostics.
-  const hasCJK = /[\u3400-\u9FFF\uF900-\uFAFF]/.test(message)
+  const hasCJK = /[\u3400-\u9FFF\uF900-\uFAFF]/.test(normalized)
 
   if (hasCJK) {
     // Apply replacements only on text nodes to avoid corrupting HTML markup
     return [
+      // 0) Normalize cases like “"..."” or “'...'” by removing the outer Chinese quotes
+      //    so later quote-based formatters can handle the inner ASCII quotes normally.
+      (msg: string) =>
+        replaceTextOnly(
+          msg,
+          /“\s*("[^"]+"|'[^']+')\s*”/g,
+          (_: string, p1: string) => p1
+        ),
       // 1) ASCII double quotes — 类型 "..."
       (msg: string) =>
         replaceTextOnly(msg, /"([^"\n]+)"/g, (_: string, p1: string) =>
@@ -84,11 +94,11 @@ export const formatDiagnosticMessage = (
           /'([^']+)'/g,
           (_: string, p1: string) => ` ${unStyledCodeBlock(p1)} `
         )
-    ].reduce((acc, fn) => fn(acc), message)
+    ].reduce((acc, fn) => fn(acc), normalized)
   }
 
   return (
-    message
+    normalized
       .replaceAll(/(?:\s)'"(.*?)(?<!\\)"'(?:\s|:|.|$)/g, (_, p1: string) =>
         formatTypeBlock('', `"${p1}"`, format)
       )
@@ -132,8 +142,10 @@ export const formatDiagnosticMessage = (
         /(Overload \d of \d), ['“](.*?)['”], /gi,
         (_, p1: string, p2: string) => `${p1}${formatTypeBlock('', p2, format)}`
       )
-      // format simple strings
-      .replaceAll(/^["“]"[^"]*"["”]$/g, formatTypeScriptBlock)
+      // format simple strings: "..." or “"..."”
+      .replaceAll(/^["“]"([^"]*)"["”]$/g, (_: string, p1: string) =>
+        formatTypeScriptBlock('', p1)
+      )
       // Replace module 'x' by module "x" for ts error #2307
       .replaceAll(
         /(module )'([^"]*?)'/gi,
