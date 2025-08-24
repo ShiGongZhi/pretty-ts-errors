@@ -23,6 +23,7 @@ export function embedSymbolLinks(diagnostic: Diagnostic): Diagnostic {
     // Try to capture quoted symbol first
     const match = msg.match(symbolQuote)
     let symbol = match?.[1]
+    const hadQuotes = !!symbol
     // Fallbacks when the localized message doesn't include quotes
     if (!symbol) {
       // EN: <id> is/was declared here
@@ -42,21 +43,29 @@ export function embedSymbolLinks(diagnostic: Diagnostic): Diagnostic {
       ref.location.range.start.line + 1
     },${ref.location.range.start.character + 1}`
 
-    // Build a safe pattern to match the symbol in the main diagnostic message, with or without quotes
+    // Build a safe pattern to match the symbol in the main diagnostic message
     const plainSymbol = symbol
       .replace(/^['"“「『]/, '')
       .replace(/['"”」』]$/, '')
 
     const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const pattern = new RegExp(
-      `(?<![\\w$])(['"“「『]?)(?:${escapeRegExp(
-        plainSymbol
-      )})(['"”」』]?)(?![\\w$])`,
-      'g'
-    )
+    const pattern = hadQuotes
+      ? // Require quotes around if the related info had them
+        new RegExp(
+          `(?<![\\w$])(['"“「『])(?:${escapeRegExp(
+            plainSymbol
+          )})(['"”」』])(?![\\w$])`
+        )
+      : // Bare identifier: avoid property keys like `name:` by excluding when followed by optional spaces and ':'
+        new RegExp(
+          `(?<![\\w$])(['"“「『]?)(?:${escapeRegExp(
+            plainSymbol
+          )})(['"”」』]?)(?![\\w$])(?!\\s*:)`
+        )
 
     return {
       ...diagnostic,
+      // Replace only the first occurrence to keep UI tidy
       message: diagnostic.message.replace(
         pattern,
         (m) =>

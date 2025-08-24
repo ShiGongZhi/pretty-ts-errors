@@ -9,6 +9,8 @@ import { formatDiagnosticMessage } from '../../format/formatDiagnosticMessage'
 import { prettifyType } from '../../format/formatTypeBlock'
 import { prettify } from '../../format/prettify'
 import { d } from '../../utils'
+import { embedSymbolLinks } from '../../format/embedSymbolLinks'
+import { Diagnostic } from 'vscode-languageserver-types'
 import {
   errorWithDashInObjectKeys,
   errorWithSpecialCharsInObjectKeys,
@@ -130,5 +132,33 @@ suite('Extension Test Suite', () => {
     assert.ok(!/“|”/.test(out))
     // The inner content should still be present/formatted
     assert.match(out, /config\.tsx/)
+  })
+
+  test('Symbol links: should not inject anchor into property keys inside code blocks', () => {
+    const original: Diagnostic = {
+      message:
+        '类型 "{ type: string; age: number; }" 的参数不能赋给类型 "{ type: number; }"。',
+      range: {
+        start: { line: 0, character: 0 },
+        end: { line: 0, character: 1 }
+      },
+      relatedInformation: [
+        {
+          message: '“type” 在此声明',
+          location: {
+            uri: 'file:///tmp/a.ts',
+            range: {
+              start: { line: 0, character: 0 },
+              end: { line: 0, character: 4 }
+            }
+          }
+        }
+      ]
+    }
+
+    const out = embedSymbolLinks(original)
+    // Should not add codicon inside the code block around "type: string" or "type: number"
+    assert.ok(!out.message.includes('codicon'))
+    assert.ok(out.message.includes('{ type: string; age: number; }'))
   })
 })
