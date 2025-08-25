@@ -138,6 +138,9 @@ suite('Extension Test Suite', () => {
     // unknown word and suggestion should be rendered in `type` code blocks
     assert.match(out, /```type[\s\S]*xiaohongshu1[\s\S]*```/)
     assert.match(out, /是否要写入[\s\S]*```type[\s\S]*xiaohongshu[\s\S]*```/)
+    // wording should be rephrased to “不存在于类型”
+    assert.match(out, /不存在于类型/)
+    assert.doesNotMatch(out, /中不存在类型/)
   })
 
   test('Chinese: strip outer Chinese quotes around ASCII quoted text (“"..."”)', () => {

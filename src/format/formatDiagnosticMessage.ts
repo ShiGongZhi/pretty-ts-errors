@@ -91,6 +91,18 @@ export const formatDiagnosticMessage = (
           (_: string, p1: string, p2: string) =>
             `${p1} ${inlineCodeBlock(p2, 'type')}`
         ),
+      // 4.2) Unknown property wording: rephrase within text-only segments
+      // “中不存在类型” -> “不存在于类型” (identifier is already highlighted separately)
+      (msg: string) =>
+        replaceTextOnly(msg, /中不存在类型/g, () => '不存在于类型'),
+      // 4.3) After rephrase, highlight the bare identifier before “不存在于类型” with type-style inline code
+      (msg: string) =>
+        replaceTextOnly(
+          msg,
+          /(但)\s*([#$\w]+)\s*(不存在于类型)/g,
+          (_: string, p1: string, ident: string, p3: string) =>
+            `${p1} ${inlineCodeBlock(ident, 'type')} ${p3}`
+        ),
       // 5) TS keywords
       (msg: string) =>
         replaceTextOnly(
