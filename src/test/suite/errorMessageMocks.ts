@@ -141,3 +141,8 @@ export const zh_cn_ts2741Error = d`
 export const zh_cn_ts2345_setStateAction = d`
 类型为“unknown”的参数不能赋给类型为“SetStateAction<{}>”的参数。
 `
+
+// Case: Record<Channel, string> should render "Channel" and not be treated as HTML
+export const zh_cn_ts2741_Record_Channel = d`
+类型 "{ douyin: string; bilibili: string; }" 中缺少属性 "xiaohongshu"，但类型 "Record<Channel, string>" 中需要该属性。
+`

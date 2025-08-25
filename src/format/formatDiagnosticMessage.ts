@@ -15,9 +15,13 @@ const replaceTextOnly = (
   replacer: StringReplacer
 ) =>
   html
-    // Split by real HTML tags only (e.g. <span>, </div>, <a ...>)
-    // so that TS generics like `<T>` or `<{}>` are treated as plain text
-    .split(/(<\/?[a-zA-Z][^>]*>)/g)
+    // Split by real HTML tags only that we actually emit (whitelist),
+    // so that TS generics like `<T>` or `<Channel, string>` are treated as plain text
+    // and won't be mis-parsed as HTML tags.
+    // Keep this list in sync with components output (<span>, <code>, <a>, lists, etc.).
+    .split(
+      /(<\/?(?:span|code|pre|a|div|p|strong|em|ul|ol|li|table|thead|tbody|tr|td|th|br|hr)[^>]*>)/g
+    )
     .map((seg) =>
       seg.startsWith('<')
         ? seg

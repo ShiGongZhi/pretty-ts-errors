@@ -21,7 +21,8 @@ import {
   zh_cn_ts2345Error,
   zh_cn_ts2339Error_cornerQuotes,
   zh_cn_ts2741Error,
-  zh_cn_ts2345_setStateAction
+  zh_cn_ts2345_setStateAction,
+  zh_cn_ts2741_Record_Channel
 } from './errorMessageMocks'
 
 suite('Extension Test Suite', () => {
@@ -124,6 +125,11 @@ suite('Extension Test Suite', () => {
     const out = formatDiagnosticMessage(zh_cn_ts2345_setStateAction, prettify)
     // We only assert the string exists; the hover output includes HTML wrappers
     assert.match(out, /SetStateAction<\{\}>/)
+  })
+
+  test('Chinese: Record<Channel, string> should be preserved and highlighted', () => {
+    const out = formatDiagnosticMessage(zh_cn_ts2741_Record_Channel, prettify)
+    assert.match(out, /Record<Channel, string>/)
   })
 
   test('Chinese: strip outer Chinese quotes around ASCII quoted text (“"..."”)', () => {
