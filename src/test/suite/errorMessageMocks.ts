@@ -146,3 +146,8 @@ export const zh_cn_ts2345_setStateAction = d`
 export const zh_cn_ts2741_Record_Channel = d`
 类型 "{ douyin: string; bilibili: string; }" 中缺少属性 "xiaohongshu"，但类型 "Record<Channel, string>" 中需要该属性。
 `
+
+// Case: Chinese TS2561 unknown property with suggestion (bare identifier should be highlighted)
+export const zh_cn_ts2561_suggestion = d`
+对象字面量只能指定已知的属性，但“xiaohongshu1”中不存在类型“Record<Channel, string>”。是否要写入 xiaohongshu?
+`

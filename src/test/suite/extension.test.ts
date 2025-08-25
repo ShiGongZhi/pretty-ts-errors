@@ -22,7 +22,8 @@ import {
   zh_cn_ts2339Error_cornerQuotes,
   zh_cn_ts2741Error,
   zh_cn_ts2345_setStateAction,
-  zh_cn_ts2741_Record_Channel
+  zh_cn_ts2741_Record_Channel,
+  zh_cn_ts2561_suggestion
 } from './errorMessageMocks'
 
 suite('Extension Test Suite', () => {
@@ -130,6 +131,13 @@ suite('Extension Test Suite', () => {
   test('Chinese: Record<Channel, string> should be preserved and highlighted', () => {
     const out = formatDiagnosticMessage(zh_cn_ts2741_Record_Channel, prettify)
     assert.match(out, /Record<Channel, string>/)
+  })
+
+  test('Chinese: TS2561 suggestion and unknown property bare word should be highlighted', () => {
+    const out = formatDiagnosticMessage(zh_cn_ts2561_suggestion, prettify)
+    // unknown word and suggestion should be rendered in `type` code blocks
+    assert.match(out, /```type[\s\S]*xiaohongshu1[\s\S]*```/)
+    assert.match(out, /是否要写入[\s\S]*```type[\s\S]*xiaohongshu[\s\S]*```/)
   })
 
   test('Chinese: strip outer Chinese quotes around ASCII quoted text (“"..."”)', () => {

@@ -83,6 +83,14 @@ export const formatDiagnosticMessage = (
               .map((prop: string) => `<li>${prop}</li>`)
               .join('')}</ul>`
         ),
+      // 4.1) Chinese suggestion: “是否要写入 xiaohongshu ?” -> highlight bare word
+      (msg: string) =>
+        replaceTextOnly(
+          msg,
+          /(是否要写入)\s*([#$\w]+)(?=[？?。]|$)/g,
+          (_: string, p1: string, p2: string) =>
+            `${p1} ${inlineCodeBlock(p2, 'type')}`
+        ),
       // 5) TS keywords
       (msg: string) =>
         replaceTextOnly(
