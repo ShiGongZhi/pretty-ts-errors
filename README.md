@@ -4,25 +4,46 @@
   style="display: flex;gap: 10px;"
 >
   <div>
-    <img src="PixPin_2025-08-18_21-18-11.gif">
+    <img src="z/PixPin_2025-08-18_21-18-11.gif">
   </div>
   <div>
-    <img src="image.png">
+    <img src="z/image1.png">
   </div>
 </div>
+
+# 中文原生不合理的翻译优化
+
+<div
+  style="display: flex;gap: 10px;"
+>
+  <div>
+    <img src="z/image2.png">
+  </div>
+</div>
+
+# 隐藏原始报错
 
 如何隐藏原始错误并使类型可复制
 按照[那里的说明](https://github.com/yoavbls/pretty-ts-errors/blob/HEAD/docs/hide-original-errors.md)进行操作。不幸的是，由于 VSCode 的限制，需要进行此 hack。
 
+上面是原版插件给出的解决方案，我发现不够完美，仍有部分原生报错无法避免，下面是我的 CSS 解决方案，可以参考一下：
+[CSS 文件](./z/pretty-ts-errors-hack.css)
+
+在有 ts 报错的场景下，使用我推荐的 CSS 文件中可选的暴力样式，最好安装我的另一个插件，可以看一下，也很不错呦。[中文展示 eslint 规则提示，且美化展示效果](https://marketplace.visualstudio.com/items?itemName=SoulFriends.eslint-rules-zh-with-pretty)，附图
+
+<div>
+  <img src="./z/image.png">
+</div>
+
 # 此插件原版说明如下
 
-<a href="https://marketplace.visualstudio.com/items?itemName=yoavbls.pretty-ts-errors" style="display: none;">
+<!-- <a href="https://marketplace.visualstudio.com/items?itemName=yoavbls.pretty-ts-errors" style="display: none;">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/yoavbls/pretty-ts-errors/main/assets/icon.png" width="140">
     <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/yoavbls/pretty-ts-errors/main/assets/icon.png" width="140">
     <img src="https://raw.githubusercontent.com/yoavbls/pretty-ts-errors/main/assets/empty.png" alt="Logo">
   </picture>
-</a>
+</a> -->
 
 # Pretty `TypeScript` Errors
 

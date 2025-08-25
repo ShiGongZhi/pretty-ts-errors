@@ -1,0 +1,54 @@
+/* Allow copying */
+.codicon-none {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  background-color: #eee !important;
+  border-radius: 4px !important;
+}
+
+/* Hide errors */
+div.monaco-hover-content:has(.codicon-none) > .hover-row:first-child {
+  display: none !important;
+}
+div.monaco-hover-content:has([style='color:#f96363;'])
+  > .hover-row:first-child {
+  display: none !important;
+}
+
+/* Change order */
+.monaco-hover .monaco-hover-content {
+  display: flex;
+  flex-direction: column;
+}
+.monaco-hover .monaco-hover-content .hover-row {
+  order: 3;
+}
+.monaco-hover .monaco-hover-content .hover-row:has(.codicon-none) {
+  order: 1;
+}
+.monaco-hover .monaco-hover-content .hover-row:has([style='color:#f96363;']) {
+  order: 1;
+}
+
+/* 清除ts报错 含有跳转链接，在此处声明了xxx */
+div.monaco-hover-content:has(.codicon-none)
+  > .hover-row:has(div[style='margin-top: 8px;'] a[style='cursor: pointer;']) {
+  display: none !important;
+}
+div.monaco-hover-content:has([style='color:#f96363;'])
+  > .hover-row:has(div[style='margin-top: 8px;'] a[style='cursor: pointer;']) {
+  display: none !important;
+}
+/*
+暴力清除剩余ts报错
+会误清除别的（如含有ts报错时，会误删除eslint cSpell等含有opacity: 0.6; padding-left: 6px;的报错
+请谨慎打开
+*/
+/* div.monaco-hover-content:has(.codicon-none)
+  > .hover-row:has(span[style='opacity: 0.6; padding-left: 6px;']) {
+  display: none !important;
+}
+div.monaco-hover-content:has([style='color:#f96363;'])
+  > .hover-row:has(span[style='opacity: 0.6; padding-left: 6px;']) {
+  display: none !important;
+} */
