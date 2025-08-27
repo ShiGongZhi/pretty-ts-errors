@@ -36,7 +36,10 @@ export const formatDiagnosticMessage = (
   message: string,
   format: (type: string) => string
 ) => {
-  // Normalize: strip outer Chinese quotes when they wrap an ASCII-quoted fragment, e.g. “"..."” or “'...'”
+  // Normalize Chinese quotes:
+  // - Case 1: strip when they wrap a single ASCII-quoted fragment, e.g. “"..."” or “'...'”
+  // - Case 2: strip when they wrap any content that itself contains ASCII quotes (e.g. unions of string literals)
+  //   Example: “"blue" | "purple" | "orange" | undefined” -> "blue" | "purple" | "orange" | undefined
   const normalized = message.replace(/“\s*("[^"]+"|'[^']+')\s*”/g, '$1')
   // If the message contains CJK characters, prefer a locale-agnostic, safe formatting path
   // that focuses on highlighting quoted code fragments without relying on English words.
@@ -54,16 +57,55 @@ export const formatDiagnosticMessage = (
           /“\s*("[^"]+"|'[^']+')\s*”/g,
           (_: string, p1: string) => p1
         ),
-      // 1) ASCII double quotes — 类型 "..."
+      // 1) Common Chinese patterns with ASCII quotes around identifiers — strip quotes
+      //    e.g. 属性 "email" -> 属性 email; 类型 "User" 中 -> 类型 User 中
       (msg: string) =>
-        replaceTextOnly(msg, /"([^"\n]+)"/g, (_: string, p1: string) =>
-          formatTypeBlock('', p1, format)
+        replaceTextOnly(
+          msg,
+          /(属性)\s*"([A-Za-z_$][\w$]*)"/g,
+          (_: string, p1: string, ident: string) =>
+            `${p1} ${formatTypeBlock('', ident, format)}`
         ),
-      // 2) Chinese full-width quotes — 类型 “...”，模块 “...”，属性 “...”
+      (msg: string) =>
+        replaceTextOnly(
+          msg,
+          /(类型)\s*"([A-Za-z_$][\w$]*)"\s*(中)/g,
+          (_: string, p1: string, ident: string, p3: string) =>
+            `${p1} ${formatTypeBlock('', ident, format)} ${p3}`
+        ),
+      // 1) Chinese full-width quotes — 类型 “...”，模块 “...”，属性 “...”。
+      //    Process before ASCII quotes so unions like “"blue" | "purple" | ...”
+      //    are treated as one segment.
       (msg: string) =>
         replaceTextOnly(msg, /“([^”]+)”/g, (_: string, p1: string) =>
           formatTypeBlock('', p1, format)
         ),
+      // 2) ASCII double quotes — 类型 "..."
+      //    Heuristic: if content looks code-like (e.g. { a: string }, A<B>, a: b, x | y),
+      //    drop the quotes; otherwise keep quotes to preserve string literal semantics
+      //    like "#0595FD" or "blue".
+      (msg: string) => {
+        // Protect existing markdown code blocks (```...```) from further replacements
+        const parts = msg.split(/(```[\s\S]*?```)/g)
+        return parts
+          .map((seg, i) =>
+            i % 2 === 1
+              ? seg // inside code block — keep as is
+              : replaceTextOnly(
+                  seg,
+                  /"([^"\n]+)"/g,
+                  (_: string, p1: string) => {
+                    const codeLike = /[{}:;|<>()[\]]/.test(p1) || /\s/.test(p1)
+                    if (codeLike) {
+                      return formatTypeBlock('', p1, format)
+                    }
+                    // Treat as string literal: keep quotes
+                    return formatTypeBlock('', `"${p1}"`, format)
+                  }
+                )
+          )
+          .join('')
+      },
       // 3) Corner quotes 「…」/『…』
       (msg: string) =>
         replaceTextOnly(

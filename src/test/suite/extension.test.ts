@@ -151,6 +151,26 @@ suite('Extension Test Suite', () => {
     assert.match(out, /config\.tsx/)
   })
 
+  test('Chinese: quoted string literal should keep quotes (e.g. "#0595FD")', () => {
+    const out = formatDiagnosticMessage(
+      '不能将类型 “"#0595FD"” 分配给类型 “"blue" | "purple" | "orange" | undefined”。',
+      prettify
+    )
+    // Should include the quotes around #0595FD inside the formatted block
+    assert.match(out, /#0595FD/)
+    assert.match(out, /blue/)
+  })
+
+  test('Chinese: union of string literals should be formatted as one block', () => {
+    const msg =
+      '不能将类型 “"#0595FD"” 分配给类型 “"blue" | "purple" | "orange" | undefined”。'
+    const out = formatDiagnosticMessage(msg, prettify)
+    // The union should appear contiguously inside one formatted type block
+    assert.match(out, /"blue" \| "purple" \| "orange" \| undefined/)
+    const typeBlocks = (out.match(/```type/g) || []).length
+    assert.strictEqual(typeBlocks, 2)
+  })
+
   test('Symbol links: should not inject anchor into property keys inside code blocks', () => {
     const original: Diagnostic = {
       message:
