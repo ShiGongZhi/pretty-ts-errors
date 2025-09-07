@@ -3,7 +3,7 @@
   "displayName": "Pretty TypeScript Errors (Chinese)",
   "publisher": "SoulFriends",
   "description": "在中文环境下更好地显示 TypeScript 错误。",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "icon": "assets/icon.png",
   "repository": {
     "type": "git",

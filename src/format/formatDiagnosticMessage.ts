@@ -150,6 +150,17 @@ export const formatDiagnosticMessage = (
           (_: string, p1: string, ident: string, p3: string) =>
             `${p1} ${inlineCodeBlock(ident, 'type')} ${p3}`
         ),
+      // 4.4) Fix Chinese translations to use proper technical terms
+      // Replace "类型 Form" with "typeof Form" when it should be typeof operator (TS2749)
+      // This handles cases where "类型 Form" is already inside code blocks
+      (msg: string) =>
+        msg.replace(
+          /类型\s+([A-Za-z_$][\w$]*)/g,
+          (match, ident) => `typeof ${ident}`
+        ),
+      // Replace "未知" with "unknown" for TypeScript unknown type
+      (msg: string) =>
+        replaceTextOnly(msg, /["""]?未知["""]?/g, () => 'unknown'),
       // 5) TS keywords
       (msg: string) =>
         replaceTextOnly(

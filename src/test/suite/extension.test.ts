@@ -210,4 +210,20 @@ suite('Extension Test Suite', () => {
     assert.ok(!out.message.includes('codicon'))
     assert.ok(out.message.includes('{ type: string; age: number; }'))
   })
+
+  test('Chinese: TS2749 should use "typeof" instead of "类型"', () => {
+    const ts2749Message = '"Form"表示值，但在此处用作类型。是否指"类型 Form"?'
+    const out = formatDiagnosticMessage(ts2749Message, prettify)
+    // Should suggest "typeof Form" instead of "类型 Form"
+    assert.match(out, /typeof Form/)
+    assert.doesNotMatch(out, /类型 Form/)
+  })
+
+  test('Chinese: TS18046 should use "unknown" instead of "未知"', () => {
+    const ts18046Message = '"data"的类型为"未知"。'
+    const out = formatDiagnosticMessage(ts18046Message, prettify)
+    // Should use "unknown" instead of "未知"
+    assert.match(out, /unknown/)
+    assert.doesNotMatch(out, /未知/)
+  })
 })
