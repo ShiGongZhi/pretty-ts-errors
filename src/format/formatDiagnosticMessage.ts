@@ -95,8 +95,13 @@ export const formatDiagnosticMessage = (
                   seg,
                   /"([^"\n]+)"/g,
                   (_: string, p1: string) => {
+                    // TypeScript built-in types should not have quotes
+                    const isBuiltInType =
+                      /^(void|null|undefined|any|boolean|string|number|bigint|symbol|object|never|unknown)(\[\])?$/.test(
+                        p1
+                      )
                     const codeLike = /[{}:;|<>()[\]]/.test(p1) || /\s/.test(p1)
-                    if (codeLike) {
+                    if (isBuiltInType || codeLike) {
                       return formatTypeBlock('', p1, format)
                     }
                     // Treat as string literal: keep quotes

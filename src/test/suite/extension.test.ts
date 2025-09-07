@@ -171,6 +171,18 @@ suite('Extension Test Suite', () => {
     assert.strictEqual(typeBlocks, 2)
   })
 
+  test('Chinese: TypeScript built-in types should not have quotes', () => {
+    const msg =
+      '元素隐式具有 "any" 类型，因为类型为 "number" 的表达式不能用于索引类型。'
+    const out = formatDiagnosticMessage(msg, prettify)
+    // Built-in types any and number should appear without quotes
+    assert.match(out, /```type[\s\S]*any[\s\S]*```/)
+    assert.match(out, /```type[\s\S]*number[\s\S]*```/)
+    // Should not contain quoted versions like "any" or "number"
+    assert.doesNotMatch(out, /"any"/)
+    assert.doesNotMatch(out, /"number"/)
+  })
+
   test('Symbol links: should not inject anchor into property keys inside code blocks', () => {
     const original: Diagnostic = {
       message:
