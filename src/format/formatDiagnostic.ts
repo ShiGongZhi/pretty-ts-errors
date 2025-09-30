@@ -4,6 +4,7 @@ import { d } from '../utils'
 import { embedSymbolLinks } from './embedSymbolLinks'
 import { formatDiagnosticMessage } from './formatDiagnosticMessage'
 import { identSentences } from './identSentences'
+import { translate } from './translate'
 
 export function formatDiagnostic(
   diagnostic: Diagnostic,
@@ -11,10 +12,15 @@ export function formatDiagnostic(
 ) {
   const newDiagnostic = embedSymbolLinks(diagnostic)
 
+  const formattedMessage = formatDiagnosticMessage(
+    identSentences(newDiagnostic.message),
+    format,
+  )
+
   return d/*html*/ `
     ${title(diagnostic)}
     <span>
-    ${formatDiagnosticMessage(identSentences(newDiagnostic.message), format)}
+    ${translate(formattedMessage, diagnostic)}
     </span>
   `
 }
