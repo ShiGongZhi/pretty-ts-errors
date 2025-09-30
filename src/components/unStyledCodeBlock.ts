@@ -1,4 +1,4 @@
-import { d } from "../utils";
+import { d } from '../utils'
 
 /**
  * Code block without syntax highlighting like.
@@ -6,4 +6,4 @@ import { d } from "../utils";
  */
 export const unStyledCodeBlock = (content: string) => d/*html*/ `
   <code>${content}</code>
-`;
+`

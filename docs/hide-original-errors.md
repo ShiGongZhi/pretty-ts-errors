@@ -10,7 +10,7 @@ To hide the original errors, display only the prettified ones, and make type blo
 
 ### Hiding Original Errors
 
-Unfortunately, VSCode doesn't currently support formatted diagnostics. Once it does, we'll be able to convert the extension to a TypeScript LSP Plugin that replaces the original error with the prettified version.  
+Unfortunately, VSCode doesn't currently support formatted diagnostics. Once it does, we'll be able to convert the extension to a TypeScript LSP Plugin that replaces the original error with the prettified version.
 For updates on this feature, follow [this issue](https://github.com/yoavbls/pretty-ts-errors/issues/3).
 
 ### Making Type Blocks Copyable

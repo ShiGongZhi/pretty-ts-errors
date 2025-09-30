@@ -2,34 +2,34 @@ import {
   inlineCodeBlock,
   multiLineCodeBlock,
   unStyledCodeBlock,
-} from "../components";
-import { addMissingParentheses } from "./addMissingParentheses";
+} from '../components'
+import { addMissingParentheses } from './addMissingParentheses'
 
 export function formatTypeBlock(
   prefix: string,
   type: string,
-  format: (type: string) => string
+  format: (type: string) => string,
 ) {
   // Return a simple code block if it's just a parenthesis
   if (type.match(/^(\[\]|\{\})$/)) {
-    return `${prefix} ${unStyledCodeBlock(type)}`;
+    return `${prefix} ${unStyledCodeBlock(type)}`
   }
 
   if (
     // Skip formatting if it's a simple type
     type.match(
-      /^((void|null|undefined|any|number|string|bigint|symbol|readonly|typeof)(\[\])?)$/
+      /^((void|null|undefined|any|number|string|bigint|symbol|readonly|typeof)(\[\])?)$/,
     )
   ) {
-    return `${prefix} ${inlineCodeBlock(type, "type")}`;
+    return `${prefix} ${inlineCodeBlock(type, 'type')}`
   }
 
-  const prettyType = prettifyType(type, format);
+  const prettyType = prettifyType(type, format)
 
-  if (prettyType.includes("\n")) {
-    return `${prefix}: ${multiLineCodeBlock(prettyType, "type")}`;
+  if (prettyType.includes('\n')) {
+    return `${prefix}: ${multiLineCodeBlock(prettyType, 'type')}`
   } else {
-    return `${prefix} ${inlineCodeBlock(prettyType, "type")}`;
+    return `${prefix} ${inlineCodeBlock(prettyType, 'type')}`
   }
 }
 /**
@@ -38,16 +38,16 @@ export function formatTypeBlock(
 export function prettifyType(
   type: string,
   format: (type: string) => string,
-  options?: { throwOnError?: boolean }
+  options?: { throwOnError?: boolean },
 ) {
   try {
     // Wrap type with valid statement, format it and extract the type back
-    return convertToOriginalType(format(convertToValidType(type)));
+    return convertToOriginalType(format(convertToValidType(type)))
   } catch (e) {
     if (options?.throwOnError) {
-      throw e;
+      throw e
     }
-    return type;
+    return type
   }
 }
 
@@ -61,16 +61,16 @@ const convertToValidType = (type: string) =>
     .replace(/^(\(.*\)): /, (_, p1) => `${p1} =>`)
     .replaceAll(/... (\d{0,}) more .../g, (_, p1) => `___${p1}MORE___`)
     .replaceAll(/... (\d{0,}) more ...;/g, (_, p1) => `___MORE___: ${p1};`)
-    .replaceAll("...;", "___KEY___: ___THREE_DOTS___;")
-    .replaceAll("...", "__THREE_DOTS__")};`;
+    .replaceAll('...;', '___KEY___: ___THREE_DOTS___;')
+    .replaceAll('...', '__THREE_DOTS__')};`
 
 const convertToOriginalType = (type: string) =>
   type
-    .replaceAll("___KEY___: ___THREE_DOTS___", "...;")
-    .replaceAll("__THREE_DOTS__", "...")
+    .replaceAll('___KEY___: ___THREE_DOTS___', '...;')
+    .replaceAll('__THREE_DOTS__', '...')
     .replaceAll(/___MORE___: (\d{0,});/g, (_, p1) => `... ${p1} more ...;`)
     .replaceAll(/___(\d{0,})MORE___/g, (_, p1) => `... ${p1} more ...`)
     .replaceAll(/... (\d{0,}) more .../g, (_, p1) => `/* ${p1} more */`) // ... x more ... not shown sell
     // .replaceAll(/\(param\: \/\* (\{ .* \}) \*\//g, (_, p1) => `(${p1}: `)
-    .replace(/type x =[ ]?((.|\n)*);.*/g, "$1")
-    .trim();
+    .replace(/type x =[ ]?((.|\n)*);.*/g, '$1')
+    .trim()

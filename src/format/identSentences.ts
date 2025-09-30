@@ -1,18 +1,18 @@
-import { d } from "../utils";
+import { d } from '../utils'
 
 export const identSentences = (message: string): string =>
   message
-    .split("\n")
+    .split('\n')
     .map((line) => {
-      let whiteSpacesCount = line.search(/\S/);
+      let whiteSpacesCount = line.search(/\S/)
       if (whiteSpacesCount === -1) {
-        whiteSpacesCount = 0;
+        whiteSpacesCount = 0
       }
       if (whiteSpacesCount === 0) {
-        return line;
+        return line
       }
       if (whiteSpacesCount >= 2) {
-        whiteSpacesCount -= 2;
+        whiteSpacesCount -= 2
       }
 
       return d/*html*/ `
@@ -22,13 +22,13 @@ export const identSentences = (message: string): string =>
         <table>
         <tr>
         <td>
-        ${"&nbsp;".repeat(3).repeat(whiteSpacesCount)}
+        ${'&nbsp;'.repeat(3).repeat(whiteSpacesCount)}
         <span class="codicon codicon-indent"></span>
         &nbsp;&nbsp;
         </td>
         <td>${line}</td>
         </tr>
         </table>
-    `;
+    `
     })
-    .join("");
+    .join('')

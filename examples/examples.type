@@ -1,7 +1,7 @@
 {
   fistName: string;
   lastName: string;
-  age: number;  
+  age: number;
 } | undefined | null;
 
 {

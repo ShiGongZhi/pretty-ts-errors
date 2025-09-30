@@ -1,21 +1,21 @@
-import { HoverProvider } from "vscode";
-import { uriStore } from "./uriStore";
+import { HoverProvider } from 'vscode'
+import { uriStore } from './uriStore'
 
 export const hoverProvider: HoverProvider = {
   provideHover(document, position) {
-    const itemsInUriStore = uriStore[document.uri.fsPath];
+    const itemsInUriStore = uriStore[document.uri.fsPath]
 
     if (!itemsInUriStore) {
-      return null;
+      return null
     }
 
     const itemInRange = itemsInUriStore.filter((item) =>
-      item.range.contains(position)
-    );
+      item.range.contains(position),
+    )
 
     return {
       range: itemInRange?.[0]?.range,
       contents: itemInRange.flatMap((item) => item.contents),
-    };
+    }
   },
-};
+}

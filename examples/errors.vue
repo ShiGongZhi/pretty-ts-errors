@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { RouterView } from "vue-router";
+import { RouterView } from 'vue-router'
 
-const x = [1, 2, 3, "4"];
+const x = [1, 2, 3, '4']
 
 function y(param: number[]) {}
 
-y(x);
+y(x)
 </script>
 <template>
   <RouterView />

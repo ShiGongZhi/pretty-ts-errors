@@ -1,9 +1,9 @@
-import { MarkdownString, Range, Uri } from "vscode";
+import { MarkdownString, Range, Uri } from 'vscode'
 
 export const uriStore: Record<
-  Uri["path"],
+  Uri['path'],
   {
-    range: Range;
-    contents: MarkdownString[];
+    range: Range
+    contents: MarkdownString[]
   }[]
-> = {};
+> = {}

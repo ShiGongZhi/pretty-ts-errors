@@ -4,35 +4,35 @@ import {
   MarkdownString,
   languages,
   window,
-} from "vscode";
-import { createConverter } from "vscode-languageclient/lib/common/codeConverter";
-import { miniLine } from "../components";
-import { formatDiagnostic } from "../format/formatDiagnostic";
-import { prettify } from "../format/prettify";
-import { d } from "../utils";
+} from 'vscode'
+import { createConverter } from 'vscode-languageclient/lib/common/codeConverter'
+import { miniLine } from '../components'
+import { formatDiagnostic } from '../format/formatDiagnostic'
+import { prettify } from '../format/prettify'
+import { d } from '../utils'
 
 /**
  * Register an hover provider in debug only.
  * It format selected text and help test things visually easier.
  */
 export function registerSelectedTextHoverProvider(context: ExtensionContext) {
-  const converter = createConverter();
+  const converter = createConverter()
 
   if (context.extensionMode !== ExtensionMode.Development) {
-    return;
+    return
   }
 
   context.subscriptions.push(
     languages.registerHoverProvider(
       {
-        language: "typescript",
-        pattern: "**/test/**/*.ts",
+        language: 'typescript',
+        pattern: '**/test/**/*.ts',
       },
       {
         provideHover(document, position) {
-          const editor = window.activeTextEditor;
-          const range = document.getWordRangeAtPosition(position);
-          const message = document.getText(editor!.selection);
+          const editor = window.activeTextEditor
+          const range = document.getWordRangeAtPosition(position)
+          const message = document.getText(editor!.selection)
 
           const contents =
             range && message
@@ -44,28 +44,28 @@ export function registerSelectedTextHoverProvider(context: ExtensionContext) {
                           message,
                           range,
                           severity: 0,
-                          source: "ts",
+                          source: 'ts',
                           code: 1337,
                         }),
-                        prettify
-                      )
+                        prettify,
+                      ),
                   ),
                 ]
-              : [];
+              : []
 
-          contents[0].isTrusted = true;
-          contents[0].supportHtml = true;
+          contents[0].isTrusted = true
+          contents[0].supportHtml = true
 
           return {
             contents,
-          };
+          }
         },
-      }
-    )
-  );
+      },
+    ),
+  )
 }
 
-const debugHoverHeader = d/*html*/ `                        
+const debugHoverHeader = d/*html*/ `
   <span style="color:#f96363;">
     <span class="codicon codicon-debug"></span>
     Formatted selected text (debug only)
@@ -73,4 +73,4 @@ const debugHoverHeader = d/*html*/ `
   <br>
   <hr>
   ${miniLine}
-`;
+`

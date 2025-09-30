@@ -1,18 +1,18 @@
-import { Diagnostic } from "vscode-languageserver-types";
-import { URI } from "vscode-uri";
+import { Diagnostic } from 'vscode-languageserver-types'
+import { URI } from 'vscode-uri'
 
 export function embedSymbolLinks(diagnostic: Diagnostic): Diagnostic {
   if (
-    !diagnostic?.relatedInformation?.[0]?.message?.includes("is declared here")
+    !diagnostic?.relatedInformation?.[0]?.message?.includes('is declared here')
   ) {
-    return diagnostic;
+    return diagnostic
   }
-  const ref = diagnostic.relatedInformation[0];
+  const ref = diagnostic.relatedInformation[0]
   const symbol = ref?.message.match(/(?<symbol>'.*?') is declared here./)
-    ?.groups?.symbol;
+    ?.groups?.symbol
 
   if (!symbol) {
-    return diagnostic;
+    return diagnostic
   }
   return {
     ...diagnostic,
@@ -22,7 +22,7 @@ export function embedSymbolLinks(diagnostic: Diagnostic): Diagnostic {
         ref.location.range.start.line + 1
       },${
         ref.location.range.start.character + 1
-      }"><span class="codicon codicon-go-to-file" ></span></a>&nbsp;`
+      }"><span class="codicon codicon-go-to-file" ></span></a>&nbsp;`,
     ),
-  };
+  }
 }

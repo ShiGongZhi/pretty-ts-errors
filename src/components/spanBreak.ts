@@ -1,4 +1,4 @@
-import { d } from "../utils";
+import { d } from '../utils'
 
 /**
  * Since every thing in the extension hover split into spans,
@@ -9,4 +9,4 @@ export const spanBreak = (children: string) => d/*html*/ `
   </span>
   ${children}
   <span>
-`;
+`
