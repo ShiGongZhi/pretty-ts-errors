@@ -2,7 +2,7 @@ import { Diagnostic } from 'vscode-languageserver-types'
 import { translationTable } from '../components/consts/translationTable'
 
 export function translate(formatted: string, diagnostic: Diagnostic) {
-  // console.log('%c Line:23 🥐 formatted', 'color:#b03734', formatted)
+  console.log('%c Line:23 🥐 formatted', 'color:#b03734', formatted)
   const codeValue = diagnostic.code
   const code =
     typeof codeValue === 'number'
